@@ -1,0 +1,21 @@
+#!/bin/sh
+export SHOGODIR="$PWD"
+if ! test -d ~/.hyperion ; then
+    echo Creating directory ~/.hyperion
+    mkdir ~/.hyperion
+fi
+
+if ! test -d ~/.hyperion/Shogo ; then
+    echo Creating directory ~/.hyperion/Shogo
+    mkdir ~/.hyperion/Shogo
+fi
+
+if ! test -e ~/.hyperion/Shogo/ShogoSrv.cfg ; then
+    echo Creating default server settings
+    cp $SHOGODIR/ShogoSrv.cfg ~/.hyperion/Shogo
+fi
+
+cd $SHOGODIR
+./ShogoSrv --config-file ~/.hyperion/Shogo/ShogoSrv.cfg /home/reto/bin/Shogo
+rm >/dev/null -f /tmp/*.lto /tmp/*.dll
+

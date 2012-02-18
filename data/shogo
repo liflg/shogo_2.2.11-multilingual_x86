@@ -1,0 +1,49 @@
+#!/bin/sh
+export SHOGODIR="$PWD"
+export SHOGO_MOVIEPATH="$PWD/Movies"
+export SHOGO_CDROM="$PWD"
+if ! test -d ~/.hyperion ; then
+    echo Creating directory ~/.hyperion
+    mkdir ~/.hyperion
+fi
+
+if ! test -d ~/.hyperion/Shogo ; then
+    echo Creating directory ~/.hyperion/Shogo
+    mkdir ~/.hyperion/Shogo
+fi
+
+if ! test -e ~/.hyperion/Shogo/autoexec.cfg ; then
+    echo Creating default autoexec.cfg file
+    cp $SHOGODIR/autoexec.cfg ~/.hyperion/Shogo
+fi
+
+if ! test -e ~/.hyperion/Shogo/ShogoLauncher.ini ; then
+    echo Creating default settings file
+    cp $SHOGODIR/ShogoLauncher.ini ~/.hyperion/Shogo
+fi
+
+if ! test -d ~/.hyperion/Shogo/Save ; then
+    echo "Creating Save directory"
+    mkdir ~/.hyperion/Shogo/Save
+fi
+
+# Remove this line if you are sure hardware YUV conversion works
+export SDL_VIDEO_YUV_HWACCEL=0
+# Remove this line if you don't need this
+export MESA_GLX_FX=full
+
+cd $SHOGODIR
+
+if ! test -e $SHOGO_CDROM/files/data.tgz ; then
+    ./messagebox "  Please mount the Shogo CD-ROM  " "OK"
+    exit
+fi
+    
+cmdline=`./shogolauncher --inidir ~/.hyperion/Shogo --shogodir $SHOGODIR $@`
+
+if test -z "$cmdline" ; then
+    exit
+fi
+
+eval "$cmdline"
+rm >/dev/null -f /tmp/*.dll /tmp/*.lto
